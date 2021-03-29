@@ -3,18 +3,20 @@ create database Blueprint
 go
 use Blueprint
 go
+
+create table ClientesTipo(
+	ID int primary key identity(1,1) not null,
+	TipoDeCliente varchar(30)
+)
+go
 create table Cliente(
 	ID int primary key not null identity(1,1),
 	RazonSocial varchar(30) not null,
 	CUIT char(15) not null unique,
 	TelefonoFijo varchar(16) null,
 	Celular varchar(16) null,
-	Mail varchar(60) null
-)
-go
-create table ClientesTipo(
-	IDCliente int primary key foreign key references Cliente(ID),
-	TipoDeCliente varchar(30)
+	Mail varchar(60) null,
+	TipoCliente int foreign key references ClientesTipo(ID)
 )
 go
 create table Proyecto(
