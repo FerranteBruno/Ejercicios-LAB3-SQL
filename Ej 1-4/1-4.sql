@@ -15,15 +15,15 @@ create table Modulo(
 	CostoPesos money not null,
 	FechaFinAprox smalldatetime not null,
 	FechaInicio smalldatetime not null,
-	FechaFin smalldatetime null check(FechaFin > getdate() AND FechaFin > FechaInicio)
+	FechaFin smalldatetime null
 )
 GO
 Create table Colaborador(
 	ID int primary key identity(1,1) not null,
 	Nombres varchar(40) not null,
 	Apellidos varchar(40) not null,
-	Mail varchar(60) null check(Celular > 0 OR Mail > 0),
-	Celular varchar(20) null check(Celular > 0 OR Mail > 0),
+	Mail varchar(60) null,
+	Celular varchar(20) null,
 	Edad tinyint not null,
 	Pais varchar(40) not null,
 	Ciudad varchar(40) not null,
