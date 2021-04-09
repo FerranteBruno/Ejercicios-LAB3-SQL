@@ -2,6 +2,19 @@ go
 create database Blueprint
 go
 use Blueprint
+
+go
+create table Pais(
+	ID int primary key identity(1,1),
+	Nombre varchar(100) not null
+)
+
+GO
+create table Ciudad(
+	ID int primary key identity(1,1),
+	Nombre varchar(100) not null,
+	IDPais int foreign key references Pais(ID)
+)
 go
 
 create table ClientesTipo(
@@ -16,7 +29,8 @@ create table Cliente(
 	TelefonoFijo varchar(16) null,
 	Celular varchar(16) null,
 	Mail varchar(60) null,
-	TipoCliente int foreign key references ClientesTipo(ID)
+	TipoCliente int foreign key references ClientesTipo(ID),
+	IDCiudad int null foreign key references Ciudad(ID)
 )
 go
 create table Proyecto(

@@ -1,11 +1,6 @@
 GO
 use Blueprint
-GO
-create table ClienteCiudad(
-	IDCliente int primary key foreign key references Cliente(ID),
-	Ciudad varchar(40)
-)
-GO
+go
 create table Modulo(
 	ID int primary key not null identity(1,1),
 	IDProyecto char(5) not null foreign key references Proyecto(ID),
@@ -15,7 +10,9 @@ create table Modulo(
 	CostoPesos money not null,
 	FechaFinAprox smalldatetime not null,
 	FechaInicio smalldatetime not null,
-	FechaFin smalldatetime null
+	FechaFin smalldatetime not null,
+
+	constraint CHK_FechaFin CHECK (FechaFin > getdate() AND FechaFin > FechaInicio)
 )
 GO
 Create table Colaborador(
@@ -24,9 +21,10 @@ Create table Colaborador(
 	Apellidos varchar(40) not null,
 	Mail varchar(60) null,
 	Celular varchar(20) null,
-	Edad tinyint not null,
-	Pais varchar(40) not null,
-	Ciudad varchar(40) not null,
-	Domicilio varchar(60) not null,
-	TipoColaborador char not null check(TipoColaborador = 'I' or TipoColaborador = 'E')
+	FechaNacimiento date not null,
+	IDCiudad int null foreign key references Ciudad(ID),
+	Domicilio varchar(100) not null,
+	TipoColaborador char not null check(TipoColaborador = 'I' or TipoColaborador = 'E'),
+
+	CONSTRAINT CHK_MailCelular check(Mail is not null or Celular is not null)
 )
