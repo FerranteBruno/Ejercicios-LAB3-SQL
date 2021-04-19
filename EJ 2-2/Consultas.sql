@@ -146,40 +146,42 @@ join Modulos as m on m.ID = m.IDProyecto
 join Colaboradores as col on col.ID is not null
 join Tareas as tar on tar.IDModulo = m.ID
 join TiposTarea as ttar on ttar.ID = tar.IDTipo
-where ttar.Nombre like 'Testing'
+where ttar.Nombre like '%Testing%'
 
 --17 Listar apellido, nombre y mail de los colaboradores argentinos que sean
 --internos y cuyo mail no contenga '.com'.
 select col.Apellido, col.Nombre, col.EMail
 from Colaboradores as col
-join Ciudades as ciu on ciu.ID = col.IDCiudad
-join Paises as p on p.ID = ciu.IDPais
-where col.Tipo like'Interno' and col.Nombre in ('Argentina') and col.EMail like '^.com'
+left join Ciudades as ciu on ciu.ID = col.IDCiudad
+left join Paises as p on p.ID = ciu.IDPais
+where col.Tipo = 'I' and p.Nombre = 'Argentina' --and col.EMail like '^(.com)'
 
 --18 Listar nombre del proyecto, nombre del módulo y tipo de tarea de aquellas
 --tareas realizadas por colaboradores externos.
 select pro.Nombre, m.Nombre as Modulo, ttar.Nombre as Tarea
 from Proyectos as pro
-join Modulos as m on m.IDProyecto = pro.ID
-join Tareas as tar on tar.IDModulo = m.ID
-join TiposTarea as ttar on ttar.ID = tar.ID
-join Colaboradores as col on col.ID is not null
-where col.Tipo in ('Externo')
+inner join Modulos as m on m.IDProyecto = pro.ID
+inner join Tareas as tar on tar.IDModulo = m.ID
+inner join TiposTarea as ttar on ttar.ID = tar.ID
+inner join Colaboraciones as colab on colab.IDTarea = ttar.ID
+inner join Colaboradores as col on col.ID = colab.IDColaborador
+where col.Tipo = 'E'
 
 
 --19 Listar nombre de proyectos que no hayan registrado tareas.
 select pro.Nombre
 from Proyectos as pro
-join Modulos as m on m.IDProyecto = pro.ID
-join Tareas as tar on tar.ID is null
+left join Modulos as m on m.IDProyecto = pro.ID
+left join Tareas as tar on tar.IDModulo = m.ID
+where tar.ID is null 
 
 --20 Listar apellidos y nombres, sin repeticiones, de aquellos colaboradores que
 --hayan trabajado en algún proyecto que aún no haya finalizado
 select distinct col.Apellido, col.Nombre
 from Proyectos as pro
-right join Modulos as m on m.IDProyecto = pro.ID
-right join Tareas as tar on tar.IDModulo = m.ID
-right join Colaboradores as col on col.ID is not null
-right join Colaboraciones as colab on colab.IDColaborador = col.ID
-where tar.FechaFin > GETDATE()
+join Modulos as m on m.IDProyecto = pro.ID
+join Tareas as tar on tar.IDModulo = m.ID
+join Colaboradores as col on col.ID is not null
+join Colaboraciones as colab on colab.IDColaborador = col.ID and colab.IDTarea = tar.ID
+where pro.FechaFin > GETDATE()
 
